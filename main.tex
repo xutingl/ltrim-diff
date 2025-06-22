@@ -1,7 +1,6 @@
+\documentclass[sigplan,screen]{acmart}
+\settopmatter{printacmref=true}
 
-
-\documentclass[sigplan,nonacm]{acmart}
-\settopmatter{printfolios=true}
 \usepackage[]{hyperref}
 
 \usepackage{algorithm}
@@ -93,7 +92,7 @@ xleftmargin=5ex
 
 \newcommand{\revisionremove}[1]{}
 
-\usepackage{todonotes}
+
 
 \microtypecontext{spacing=nonfrench}
 
@@ -198,7 +197,66 @@ frame hidden
 
 \newcommand{\cmark}{\color{green}\ding{51}}
 \newcommand{\xmark}{\color{red}\ding{55}}
+
+\newcommand\blfootnote[1]{\begingroup \renewcommand\thefootnote{}\footnote{#1}\addtocounter{footnote}{-1}\endgroup }
+
+\makeatletter
+\def\@mkauthors@iii{\author@bx@wd=\textwidth\relax
+  \advance\author@bx@wd by -\author@bx@sep\relax
+  \ifnum\@ACM@authorsperrow>0\relax
+    \divide\author@bx@wd by \@ACM@authorsperrow\relax
+  \else
+    \ifcase\num@authorgroups
+    \relax \or  \or  \divide\author@bx@wd by \num@authorgroups\relax
+    \or  \divide\author@bx@wd by \num@authorgroups\relax
+    \or  \divide\author@bx@wd by \num@authorgroups\relax
+    \else \divide\author@bx@wd by 3\relax
+    \fi
+  \fi
+  \advance\author@bx@wd by -\author@bx@sep\relax
+  \advance\author@bx@wd by 0.5em\relax
+  \gdef\@currentauthors{}\gdef\@currentaffiliation{}\def\@author##1{\ifx\@currentauthors\@empty
+    \gdef\@currentauthors{\par##1}\else
+    \g@addto@macro\@currentauthors{\par##1}\fi
+  \gdef\and{}}\def\email##1##2{\ifx\@currentaffiliation\@empty
+    \gdef\@currentaffiliation{\bgroup
+      \mathchardef\UrlBreakPenalty=10000\nolinkurl{##2}\egroup}\else
+    \g@addto@macro\@currentaffiliation{\par\bgroup
+      \mathchardef\UrlBreakPenalty=10000\nolinkurl{##2}\egroup}\fi}\def\affiliation##1##2{\ifx\@currentaffiliation\@empty
+    \gdef\@currentaffiliation{\setkeys{@ACM@affiliation@}{obeypunctuation=false}\setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}\else
+    \g@addto@macro\@currentaffiliation{\par
+      \setkeys{@ACM@affiliation@}{obeypunctuation=false}\setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}\fi
+  \global\let\and\@typeset@author@bx
+}\hsize=\textwidth
+  \global\setbox\mktitle@bx=\vbox{\noindent
+    \unvbox\mktitle@bx\par\medskip\leavevmode
+    \lineskip=1pc\relax\centering\hspace*{-1.5em}\addresses\let\and\@typeset@author@bx\and\par\bigskip}}
+\makeatother
  
+\setcopyright{acmlicensed}
+
+\copyrightyear{2025}
+\acmYear{2025}
+\setcopyright{acmlicensed}\acmConference[ASPLOS '25]{Proceedings of the 30th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 3}{March 30-April 3, 2025}{Rotterdam, Netherlands}
+\acmBooktitle{Proceedings of the 30th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 3 (ASPLOS '25), March 30-April 3, 2025, Rotterdam, Netherlands}
+\acmDOI{10.1145/3676642.3736129}
+\acmISBN{979-8-4007-1080-3/2025/03}
+
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+      <concept_id>10010520.10010521.10010537.10003100</concept_id>
+      <concept_desc>Computer systems organization~Cloud computing</concept_desc>
+      <concept_significance>500</concept_significance>
+      </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Computer systems organization~Cloud computing}
+
+\keywords{Serverless computing, cold starts, debloating}
 
 
 \begin{document}
@@ -208,12 +266,46 @@ frame hidden
 
 
 
-\title{\LARGE \bf \texorpdfstring{\boldmath}{}\sys: Optimizing Function Initialization in Serverless Applications\texorpdfstring{\\}{ }With Cost-driven Debloating}
+\title[\sys: Optimizing Function Initialization in Serverless Applications]{\texorpdfstring{\boldmath}{}\sys: Optimizing Function Initialization in Serverless Applications With Cost-driven Debloating}
 
-\author{Paper \#1066, 13 pages body, \ref{TotPages} pages total}
+
+
+\author{Xuting Liu*}
+\affiliation{\institution{University of Pennsylvania}
+  \city{Philadelphia}
+  \state{PA}
+  \country{USA}
+}
+\email{xutingl@seas.upenn.edu}
+
+
+\author{Spyros Pavlatos*}
+\affiliation{\institution{University of Pennsylvania}
+  \city{Philadelphia}
+  \state{PA}
+  \country{USA}
+}
+\email{pavlatos@seas.upenn.edu}
+
+
+\author{Yuhao Liu}
+\affiliation{\institution{University of Pennsylvania}
+  \city{Philadelphia}
+  \state{PA}
+  \country{USA}
+}
+\email{liuyuhao@seas.upenn.edu}
+
+
+\author{Vincent Liu}
+\affiliation{\institution{University of Pennsylvania}
+  \city{Philadelphia}
+  \state{PA}
+  \country{USA}
+}
+\email{liuv@seas.upenn.edu}
+
 \date{}
-
-
 
 \iffalse
 \newcommand{\review}[1]{}
@@ -237,15 +329,17 @@ The optimized application can be directly deployed on serverless platforms, lead
 
 
  
-\end{abstract}
+\vspace{-1em}
+
+\blfootnote{\textit{*Denotes equal contribution and alphabetical ordering.}}\end{abstract}
 
 
 
 \maketitle
-\pagestyle{plain}
 
 
 \section{Introduction}
+\label{sec:intro}
 
 
 Serverless computing is an increasingly popular paradigm that allows clients to run their applications on cloud providers without worrying about the prosaic but complex tasks of provisioning, scaling, and maintaining VMs or containers~\cite{Jonas:EECS-2019-3}.
@@ -269,32 +363,30 @@ User logic is primarily contained within the Function Execution stage.
 In this work, we call attention to, quantify, and address the fact that, among these stages, Function Initialization plays an outsized role in the overhead of serverless computing.
 Even though this stage is not executed for every request, its costs can be substantial, both in latency and resources, the latter of which manifests as higher monetary costs to users.
 
-One way that Function Initialization adds overhead is during so-called \textit{cold starts}.
-Cold starts are a direct result of serverless platforms' managed scaling, and they refer to the scenario where the cloud platform is forced to initialize---in the critical path---a new serverless instance in response to an incoming request and insufficient existing capacity.
+One way that Function Initialization adds overhead is during so-called \textit{cold starts},
+where the cloud platform is forced to initialize---in the critical path---a new serverless instance in response to an incoming request and insufficient existing capacity.
 This contrasts warm starts, where the cloud provider can reuse a previously initialized VM/container.
-As many others have also noted~\cite{wild2020,faascache2021,faaslight2023}, these cold starts can be common for some applications, and their latency penalty can be substantial, accounting for up to an 80\% increase in latency compared to warm function execution, even when using an interpreted language runtime like Python.
-While other components of cold start latency  (e.g., instance initialization and image transmission) have been heavily optimized by cloud providers, Function Initialization faces the opposite trend: a move toward more/heftier libraries (e.g., ML, scientific computing, and image/video processing)~\cite{pypistats} and scale-out architectures that lead to very bursty workloads~\cite{fouladi19gg}.
+As many others have also noted~\cite{wild2020,faascache2021,faaslight2023}, these cold starts can be common for some applications, and their latency penalty can be substantial, accounting for up to an 80\% increase in latency compared to warm function execution. Within cold starts, Function Initialization is of particular concern given trends toward more/heftier libraries (e.g.,
+ML, scientific computing, and image/video processing)~\cite{pypistats}
+and scale-out architectures that lead to very bursty work-
+loads~\cite{fouladi19gg}.
 
 In addition to latency, Function Initialization also differs from other cold-start components in that cloud providers typically bill users for the time, as shown in \cref{fig:pytorch-flow}\footnote{As we discuss in \cref{ssec:anatomy}, some functions' initialization is complimentary, but this is not true in general.}.
-There are good reasons for this pricing strategy: not billing for initialization could result in perverse incentives, e.g., users breaking up expensive computations into a sequence of $n$ functions where each does $\frac{1}{n}$ of the computation, checkpoints it, and the billable work is a no-op.
+There are good reasons for this pricing strategy: not billing for initialization could result in perverse incentives, e.g., users breaking up expensive computations into a sequence of $n$ functions where each does $\frac{1}{n}$ of the computation, and stores/loads partial results---the billable work would be a no-op.
 The result, however, is that for the ResNet application of \cref{fig:pytorch-flow}, initialization can be responsible for up to 45\% of the total bill.
 
 Finally, the overheads of Function Initialization can persist even after the instance has been warmed, as large libraries and data structures instantiated during initialization will continue to occupy memory even if they are never used, consuming resources that again manifest as high monetary costs for every user request.
 
-Prior work has looked at parts of this problem, particularly through the lens of optimizing cold start latency, e.g., though OS improvements~\cite{firecracker2020, catalyzer2020, faasnap2022}, better function scheduling~\cite{caerus2021, LCS2023, sustainableServerless24}, caching~\cite{faascache2021,SCache23,rainbowcake, containerLoading2023,wild2020,kraken2021}, provisioned concurrency~\cite{provisionedConcurrency}, prewarming~\cite{icebreaker22}, and memory/resource sharing~\cite{medes22, tetris2022, containerSharing2022}.
-Unfortunately, a fixation on just one part of the problem (e.g., cold start latency) can lead to tradeoffs on the other aspects (e.g., the resource costs of caching that are detailed in \cref{sec:eval-cr}).
-Existing solutions also often require major overhauls to the serverless infrastructure that are impractical to adapt to current systems.
-The few approaches that target Function Initialization more broadly are largely manual (e.g., developing lightweight libraries~\cite{libprof2024} or relatively simple methods to refactor the application~\cite{faaslight2023, serverless-app-dev2021, fusion2023}).
-
-
-
+Prior work has looked at parts of this problem, especially through the lens of optimizing cold start latency, e.g., through OS improvements~\cite{firecracker2020, catalyzer2020, faasnap2022}, better function scheduling~\cite{caerus2021, LCS2023, wild2020, sustainableServerless24,kraken2021}, checkpoint/restore techniques~\cite{catalyzer2020, prebaking2020}, and others.
+Unfortunately, a fixation on just one part of the problem, like cold start latency, can lead to tradeoffs on the other aspects (e.g., the resource costs of checkpoint/restore techniques that are detailed in \cref{sec:eval-cr}).
+The few approaches that target both latency and monetary cost are largely manual (e.g., developing lightweight libraries~\cite{libprof2024} or relatively simple methods to refactor the application~\cite{faaslight2023, serverless-app-dev2021, fusion2023}).
 
 
 
 This paper presents \sys, a system that optimizes Python serverless applications by profiling and eliminating unnecessary initialization operations.
-\sys's holistic optimization of Function Initialization minimizes the latency of cold starts and the monetary cost of both cold and warm executions.
-\sys operates entirely as a pre-processing step---its output is an optimized serverless application with a shorter and less-memory-intensive Function Initialization phase.
-It is, thus, immediately deployable and remains compatible with parallel efforts toward cold start optimization.
+\sys's optimizations minimize the latency of cold starts and the monetary cost of both cold \textit{and} warm executions.
+\sys operates entirely as a pre-processing step at the application level---its output is an optimized serverless application with a shorter Function Initialization phase and less memory footprint.
+It is, thus, immediately deployable and remains compatible with system-level efforts toward cold start optimization.
 
 
 
@@ -374,8 +466,11 @@ Our key contributions are as follows:
 
 In traditional cloud computing models, users are responsible for a wide range of system administration tasks not directly related to their application logic, e.g., provisioning a batch of VMs, specifying their resource profiles, deploying dependencies, scaling the instance up and down with the workload, and monitoring the application as it runs, among others.
 
-Serverless computing is an alternative model of computation that promises to free users from all the above concerns.
-Instead, users simply supply the cloud provider with a function containing their application's logic---commonly known as the \textit{serverless function} or \textit{lambda}---and the provider handles all provisioning, scaling, load balancing, and management of the function execution instances.
+Serverless computing is an alternative that promises to free users from all the above concerns.
+Instead, users simply supply the cloud provider with a function containing their application's logic (commonly known as the \textit{serverless function} or \textit{lambda}).
+The provider handles the rest.
+
+
 
 This abstraction offers many benefits, including: 
 \begin{enumerate*}[label=(\arabic*)]
@@ -388,7 +483,7 @@ This paradigm has proven popular, with all large cloud providers offering a rang
 
 The workflow for developing such applications is straightforward. 
 Users write a function in their preferred programming language, package the function code and any necessary libraries into a suitable format (e.g., a container image or ZIP file), and then upload it to the serverless platform.
-After deployment, the serverless platform manages all aspects of resource provisioning and execution.
+The serverless platform manages provisioning and execution.
 
 \subsection{The Anatomy and Pricing of Lambda Execution} \label{ssec:anatomy}
 
@@ -402,8 +497,8 @@ Partly because of its advantage in cold-start latency (on top of their ease of u
 
 
 Once a serverless instance is initialized, the instance remains active for a keep-alive period that is reset on a new request to the instance in question.
-In AWS Lambda, the keep-alive period is up to $\sim$45--60\,min, but potentially much less depending on the size of the instance and resource availability~\cite{keepalive-blog}; in GCP Run Cloud functions, the period is $\leq$15\,min. 
-If another request arrives during this period and the instance is not already processing a request, it can execute the new request without repeating the initialization process, resulting in what is known as a \textit{warm start}.
+In AWS Lambda, the keep-alive period is up to $\sim$45--60\,min, but potentially much less depending on the size of the instance and resource availability~\cite{keepalive-blog}; in GCP, the period is $\leq$15\,min. 
+If another request arrives during this period and the instance is not already processing a request, it can execute the new request without repeating initialization, resulting in a \textit{warm start}.
 
 
 \heading{Pricing}
@@ -412,8 +507,7 @@ Allocation of other resources like CPU and network bandwidth depends on the clou
 AWS, for instance, allocates both resources proportionately to the memory footprint, with additional vCPUs assigned at designated memory allocation breakpoints.
 Azure allocates a fixed CPU and memory (100\,ACU and 1.5\,GB) budget per function instance, with additional configuration options for premium hosting plans, while GCP allows independent configuration of CPU/memory in their v2 API.
 
-Across platforms, users are also typically billed for request volume and data transfer, but only between different regions and availability zones;
-image transmission and inter-function communication inside the same availability zone is free.
+
 
 For a given invocation, the pricing is thus primarily determined by the footprint and duration of the function.
 For example, AWS Lambda charges users as follows:
@@ -461,9 +555,9 @@ As such, serverless platforms are strongly incentivized to optimize this phase b
  
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{chapters/2_motivation/import_cost.pdf}
+\includegraphics[width=0.8\textwidth]{chapters/2_motivation/import_cost.pdf}
 \vspace{-0.8em}
-\caption{Billed duration (left bar) and monetary cost (right bar) for each serverless application.
+\caption{Billed duration (left bar) and monetary cost (right bar) of cold starts for each serverless application.
 The billed duration, priced for 100K invocations, is further divided into Function Initialization (Import) and Function Execution (Exec) time.
 The label on the bar is the percentage of import time out of the total billed duration.}
 \label{fig:import-cost}
@@ -477,7 +571,7 @@ We conduct our experiments on AWS Lambda using a Python 3.10 runtime.
 
 \subsubsection{Benchmarked Applications}
 We collect a comprehensive set of serverless applications by constructing a union of applications used in other work, namely FaaSLight~\cite{faaslight2023} and RainbowCake~\cite{rainbowcake}.
-To augment this set of applications, for some of the 20 largest packages in PyPI~\cite{pypi}, we select a representative, real-world, and open-source serverless application found via GitHub search and add it to the union as well.
+To augment this set of applications, for some of the 20 largest and most popular packages in PyPI~\cite{pypi} (excluding nightly versions), we select a representative, real-world, and open-source serverless application found via GitHub search and add it to the union as well.
 Finally, we remove any repetitive applications that implement similar tasks.
 We prioritize applications that are the most recent and have clear instructions to run.
 For example, a machine learning image classification application that uses PyTorch appears in all three of our sources, and we keep the RainbowCake version.
@@ -526,7 +620,7 @@ We report Import, Execution, and E2E latency of each application in \Cref{tab:ap
 As discussed in \cref{ssec:anatomy}, AWS Lambda charges each invocation based on both billed duration and configured memory.
 Although it is possible to configure 128\,MB to 10\,GB memory for any serverless application on AWS Lambda, for the best cost-effectiveness, the memory should be set proportional to the memory footprint~\cite{lambdaTuning}.
 As a lower bound, we report the measured maximum memory footprint of the application for a single request---in practice, there will be some additional headroom.
-If the measured memory is less than 128\,MB, we use 128\,MB as the lowest allowed memory.
+We set memory to 128\,MB in cost calculation if the measured memory is less.
 We report the monetary cost for 100K invocations, calculated using the unit price of \$0.0000162109 per GB per second~\cite{lambdaPrice}.
 
 
@@ -553,6 +647,7 @@ Thus, when a serverless application---typically consisting of a single, focused 
 
 
 
+
  
   
 \section{Related Work and Approach}
@@ -562,16 +657,19 @@ Thus, when a serverless application---typically consisting of a single, focused 
 
 
 
-The majority of work in optimizng serverless functions focuses on cold start latencies.
+The majority of work in optimizing serverless functions focuses on cold start latencies.
 
-One approach is to optimize the serverless infrastructure itself, e.g., through OS improvements~\cite{firecracker2020, catalyzer2020, faasnap2022}, optimized function scheduling~\cite{caerus2021, LCS2023, sustainableServerless24}, checkpoint/restore~\cite{catalyzer2020, prebaking2020}, caching~\cite{faascache2021,SCache23,rainbowcake, containerLoading2023}, provisioned concurrenct~\cite{provisionedConcurrency}, prewarming~\cite{icebreaker22} and memory and resource sharing~\cite{medes22, tetris2022, containerSharing2022}.
-Out of these system-level optimizations, the most widely used is checkpoint/restore
-(C/R).
-Checkpointing involves periodically saving the runtime state of a serverless function after initialization, including memory, execution context, intermediate computations, or even a snapshot of the whole VM. 
-In the case of a cold start, the serverless platform can restore from the last checkpoint instead of starting from the beginning and re-executing the initialization code.
+One approach is to optimize the serverless infrastructure itself, e.g., through many of the techniques cited in \cref{sec:intro} such as OS improvements~\cite{firecracker2020, catalyzer2020, faasnap2022}, optimized function scheduling~\cite{caerus2021, LCS2023, wild2020, sustainableServerless24,kraken2021}, checkpoint/restore~\cite{catalyzer2020, prebaking2020}, caching~\cite{faascache2021,SCache23,rainbowcake, containerLoading2023}, provisioned concurrency~\cite{provisionedConcurrency}, prewarming~\cite{icebreaker22,wild2020} and memory/resource sharing~\cite{medes22, tetris2022, containerSharing2022}.
+Of these, checkpoint/restore (C/R) is of particular note as it directly accelerates the Function Initialization phase.
+Checkpointing involves saving the runtime state of a serverless function after initialization, including memory, execution context, intermediate computations, or even a snapshot of the whole VM. 
+During a cold start, the serverless platform can restore from the checkpoint instead of starting from scratch.
+Unfortunately, as we will see in \cref{sec:eval-cr}, they come with a cost, and that cost is being exacerbated by the same trends that motivate this work: trends toward more/heftier libraries and scale-out architectures---aggregate checkpoint sizes grow in both cases.
 
-The drawback of framework-level optimizations is that they require privileged access to the underlying serverless infrastructure.
+More generally, the drawback of framework-level optimizations is that they require privileged access to the underlying serverless infrastructure.
 This means that users cannot use them to speed up their applications unless the optimizations are adopted by the serverless vendors.
+
+
+
 
 
 Application-level optimizations do not require privileged access to the infrastructure, but existing solutions all rely exclusively on static analysis and/or human intervention, which limits their scope and efficacy.
@@ -646,7 +744,7 @@ The algorithm terminates if the maximum granularity is exceeded, i.e., $n > |A|$
 
 
 \sys reduces the overheads of Function Initialization in serverless functions.
-While our prototype implementation targets Python, we note that our techniques are directly applicable to other interpreted languages (e.g., Javascript)\footnote{$\sim$70\% of all serverless applications are written in Python or Javascript~\cite{datadog-blog}.} and can be extended to compiled languages as demonstrated by prior applications of DD~\cite{delta2002,deltarl2018}, albeit at the cost of compilation overheads during the debloating process.
+While our prototype implementation targets Python, we note that our techniques can be applied in a very similar way to other interpreted languages like Javascript\footnote{$\sim$70\% of all serverless applications are written in Python or Javascript~\cite{datadog-blog}.} (see \cref{sec:debloating-tailoring}) and can be extended to compiled languages as demonstrated by prior applications of DD~\cite{delta2002,deltarl2018}, albeit at the cost of compilation overheads during the debloating process.
 In any case, \sys's approach is to---through pure application pre-processing---remove code from applications' dependency chains that are not needed for the application to run.
 
 At the core of our approach is the DD technique described above; however, we emphasize that a naive application of DD is impractical.
@@ -703,15 +801,12 @@ Further, although \sys is aggressive in its removal of functions, classes, and m
 
 In this section, we detail the components of \sys and their responsibilities in optimizing an application.
 
-\subsection{Program Inputs}
-
-
-
+\heading{Program Inputs}
 Serverless applications consist of two parts: $(a)$ initialization code and $(b)$ a designated function handler.
 Initialization code consists of library loading and environment setup.
-For instance, in Python applications, this consists of \texttt{import} statements, definitions of helper functions, establishing connections with databases or other services, etc.
+For instance, in Python applications, this may include \texttt{import}s, definitions of helper functions, establishing connections with databases or other services, etc.
 All of these execute once per function instance as part of the cold start process.
-The handler, on the other hand, is a function entry point that takes a request and processes it;
+The handler, on the other hand, is the entry point that takes a request and processes it;
 the serverless platform calls into this handler as new requests arrive.
 
 \begin{figure}
@@ -723,11 +818,11 @@ the serverless platform calls into this handler as new requests arrive.
 
 A minimal example that utilizes AWS SDK for Python is given in \Cref{fig:handler}.
 The entry point to the application is the \texttt{handler} function, which takes as arguments an \texttt{event} and a \texttt{context}.
-An event object is \texttt{JSON} formatted object that contains data for the lambda function to process, while the \texttt{context} object provides information about the invocation, function, and runtime environment~\cite{lambdaHandler}.
+An event is a \texttt{JSON} formatted object that contains data for the lambda function to process, while the \texttt{context} object provides information about the invocation, function, and runtime environment~\cite{lambdaHandler}.
 Code outside of the \texttt{handler} counts as the Function Initialization phase, which in this case includes an \texttt{import} and \texttt{boto3} session setup.
 
 \sys expects two user inputs.
-The first is an application in the above format, i.e., a Python program with a corresponding lambda handler.
+The first is an application in the above format, i.e., a Python program with a lambda handler.
 The second is the oracle specification, i.e., \texttt{JSON} file containing the input test cases that \sys will use to ensure correctness.
 Each test must contain an \texttt{event} and a \texttt{context}.
 
@@ -829,6 +924,9 @@ During normal operation, the overhead of this wrapper is negligible.
 The tradeoff is that the overheads of actually triggering the fallback can be high (see \Cref{sec:fallback-overhead}).
 That said, the fallback mechanism is a safety net that should be executed very rarely and, when it is triggered, should alert the user to re-run \sys with an updated oracle set.
 
+Note that re-execution of a non-idempotent function may cause inconsistencies and side effects.
+However, these types of re-executions already exist even without \sys, so non-idempotent applications should already be handling these cases (e.g., using a framework like Beldi~\cite{beldi}).
+
 
 
 
@@ -847,9 +945,8 @@ If the fuzzer finds a failing input, then the user can add the input to the orac
  
 \section{The Debloating Process}
 
-In this section, we detail \sys's debloating algorithm.
-
 \subsection{Tailoring DD for Serverless Python Applications}
+\label{sec:debloating-tailoring}
 
 A critical design decision in \sys is to identify the appropriate debloating granularity not only based on Python's semantics but also based on the potential speed-up of the loading time when the application is deployed on AWS Lambda.
 
@@ -867,8 +964,14 @@ Compared to statement granularity, attribute granularity is coarser with respect
 
 To minimize the overheads of Function Initialization, we use DD with attribute granularity to debloat imported modules.
 By doing so, we not only eliminate \verb|function| and \verb|class| definitions and the costly \verb|import| statements but also remove unused module attributes from \verb|from import| statements, thus reducing the memory footprint of the created module objects.
-If we were to use statement granularity, we would not be able to remove specific attributes from such statements but, rather, would either remove all or none of them.
+With statement granularity, we cannot remove specific attributes, as it removes all or none of them.
 
+\heading{Generalizability}
+It is worth discussing the generalizability of the above techniques to other interpreted languages like Javascript (JS), though a full exploration of the design is out of scope.
+JS offers a similar import model as Python; one can import specific exports from another module, similar to the \texttt{from import} statement of Python. 
+Thus, DD can be adjusted in a straightforward way to JS modules.
+An additional complexity of JS is the wider range of module namespaces, which include URLs.
+To handle this, one can resolve namespaces statically and then proceed to DD.
 
 
 \begin{figure}[t]
@@ -880,8 +983,9 @@ If we were to use statement granularity, we would not be able to remove specific
  
 \subsection{Running Example}
 
-To illustrate our implementation of DD for Python programs, we will consider a simplified version of the \module{torch} module containing the following attributes:
+To illustrate our implementation of DD for Python programs, we will consider a simplified version of the \module{torch} module:
 
+\vspace{-0.5em}
 {\footnotesize
 \[
 A = \left\{
@@ -895,9 +999,8 @@ A = \left\{
 
 \noindent
 where \attribute{torch.tensor} is a tensor class and \attribute{torch.add} and \attribute{torch.view} are two tensor operations.
-\attribute{torch.nn.Linear} is a Neural Network layer
-that is imported from the submodule \module{torch.nn}.
-Finally, \attribute{torch.nn.MSELoss} (MSE loss function from the \module{torch.nn} submodule) and \attribute{torch.optim.SGD} (gradient descent optimizer from the \module{torch.optim} submodule) are used for optimizing a Neural Network.
+\attribute{torch.nn.Linear} is a Neural Network layer from the \module{torch.nn} submodule.
+Finally, \attribute{torch.nn.MSELoss} and \attribute{torch.optim.SGD} are utilities for optimizing Neural Networks.
 
 We import the \module{torch} module in the simple application shown in \Cref{fig:torch-example}.
 This application does not make use of \attribute{torch.nn.MSELoss} and \attribute{torch.optim.SGD}.
@@ -1045,6 +1148,7 @@ Assuming that none of the other four attributes depend on them, DD will remove t
 After DD correctly identifies the redundancy of the two attributes and removes them from the library, the resulting module initialization code is shown in \Cref{fig:torch_libraries}.
 The debloated library now consists of:
 
+\vspace{-0.5em}
 {\footnotesize\[
 A^{*} = \left\{
 \begin{array}{ll}
@@ -1055,9 +1159,9 @@ A^{*} = \left\{
 \]}
 
 \noindent
-The debloated library only imports the submodule \module{torch.nn} (without the attribute \attribute{torch.nn.MSELoss}) and does not import \module{torch.optim}.
+The debloated library omits the attribute \attribute{torch.nn.MSELoss} and skips the import of \module{torch.optim} entirely.
 
-\begin{figure*}[h]
+\begin{figure*}[t]
     \centering
     \begin{subfigure}[b]{0.9\columnwidth}
         \centering
@@ -1099,8 +1203,8 @@ For each of the modules in the top-K of marginal monetary cost, the debloating p
 \section{Implementation}
 
 The \sys implementation comprises roughly 1.1k LoC of Python.
-The only third-party package that we use is \texttt{PyCG} \cite{pycg2021} to extract the call graph of applications
-and \texttt{psuitl} to measure the memory footprint of the imported modules; the rest of the code does not depend on any external module.
+The only third-party packages we use are \texttt{PyCG} \cite{pycg2021} to extract the call graph of applications
+and \texttt{psutil} to measure the memory footprint of the imported modules.
 We have tested our implementation against Python 3.10.
 There are two implementation details that are important to note.
 
@@ -1115,8 +1219,8 @@ By spawning a new process for each phase, we provide each with its own address s
 
 \heading{Deployment} \sys directly modifies the \texttt{site-packages} directory of the underlying Python installation.
 To ensure that these modifications are compatible with AWS Lambda, we embed \sys in the building phase of the container image.
-We are using the Amazon Linux Base from AWS as the base image of the container.
-The system deploys this container image to AWS Lambda.
+We use Amazon Linux Base as the base image.
+\sys deploys the resulting container image to AWS Lambda.
  
 \section{Evaluation}
 
@@ -1147,15 +1251,15 @@ What is the optimal $K$ that keeps debloating time reasonable?
 
 \begin{figure*}[t]
   \centering
-    \includegraphics[width=0.8\textwidth]{chapters/evaluation/exp-latency.pdf}
+    \includegraphics[width=0.75\textwidth]{chapters/evaluation/exp-latency-wide.pdf}
     
     \vspace{-0.3em}
     
-    \includegraphics[width=0.8\textwidth]{chapters/evaluation/exp-memory.pdf}
+    \includegraphics[width=0.75\textwidth]{chapters/evaluation/exp-memory-wide.pdf}
     
     \vspace{-0.3em}
     
-    \includegraphics[width=0.8\textwidth]{chapters/evaluation/exp-cost.pdf}
+    \includegraphics[width=0.75\textwidth]{chapters/evaluation/exp-cost-wide.pdf}
 
 \vspace{-0.7em}
   \caption{\sys's improvements to latency, memory footprint, and monetary cost for our benchmarked applications.
@@ -1168,8 +1272,7 @@ What is the optimal $K$ that keeps debloating time reasonable?
 
 \vspace{-0.35em}
 \topheading{Experimental setup}
-As already mentioned, the debloating process is embedded in the container-building phase of the Lambda application.
-We perform the container build locally on Cloudlab's \cite{cloudlab} \texttt{c6525-25g} machines that have Ubuntu 22.04, 16-core AMD 7302P 3GHz CPUs, and 128GB RAM before executing the final programs on AWS Lambda with the x86 ISA and Python runtime.
+We perform the container build on Cloudlab's \cite{cloudlab} \texttt{c6525-25g} machines that have Ubuntu 22.04, 16-core AMD 7302P 3GHz CPUs, and 128GB RAM before uploading and executing the final programs on AWS Lambda with the x86 ISA and Python runtime.
  
 \heading{Benchmarks and methodology}
 We use the applications from \Cref{tab:apps} as our benchmarks.
@@ -1196,7 +1299,7 @@ Several applications like \application{lightgbm}, \application{resnet}, \applica
 On average, \sys achieves 1.2$\times$ speed-up in E2E latency with a maximum of 2$\times$ for \application{resnet}.
 
 There are several applications like \application{ffmpeg} and \application{image-resize} that do not benefit from \sys.
-These two applications use Python libraries which wrap the tools \texttt{ffmpeg} and \texttt{ImageMagick} and perform calls to their executables and are, therefore, 
+These two applications use Python libraries that wrap the tools \texttt{ffmpeg} and \texttt{ImageMagick} and perform calls to their executables and are, therefore, 
 bottlenecked on the corresponding system calls to these executables.
 In principle, these libraries could also be included in DD, but deployment would be more complex.
 
@@ -1216,19 +1319,19 @@ Using \Cref{eq:cost} and the actual memory footprint,
 applications like \application{dna-visualization}, \application{lightgbm}, \application{resnet}, \application{skimage}, and \application{spacy} all exhibit large improvements in cost.
 On average, \sys reduces cost by 19.7\% with a max of 59\% for \application{skimage}.
 
-We note that AWS Lambda has a minimum billing threshold for the configured memory (128\,MB); however,
-as real applications can have increased memory footprints (e.g., if they import additional modules or perform additional tasks) we use the raw memory footprint when computing costs instead of the minimum threshold.
+Since AWS Lambda has a minimum billing threshold for the configured memory (128\,MB), applications requiring less are billed as if they are using this minimum threshold, which hides \sys's memory benefit for small applications.
 
 
 \heading{Comparison with FaaSLight and Vulture}
-We present a short comparison with FaaSLight \cite{faaslight2023} and Vulture~\cite{vulture} in \Cref{tab:comparison}.
-We note that, similar to \cite{libprof2024}, we were unable to run the original tools to the same degree even after communication with the authors, thus, we only compare against the reported numbers for their applications and metrics.
+We present a comparison with FaaSLight \cite{faaslight2023} and Vulture~\cite{vulture} in \Cref{tab:comparison}.
+We note that, similar to \cite{libprof2024}, we were unable to run the original tools to the same degree.
+Thus, we only compare against the reported numbers for their applications and metrics.
 We omit trivial use cases where all imports are unused.
 
 Despite FaaSLight taking advantage of extensive manual annotations and intervention, the two systems show very similar performance in \application{skimage}, \application{tensorflow}, and \application{wine}.
 \sys seems to heavily outperform FaaSLight in \application{lightgbm} and \application{lxml}, while FaaSLight has greater improvements in \application{huggingface} and \application{image-resize}.
 Part of this difference may be due to smaller trial counts in FaaSLight's evaluation, as at 20 trials, our results still exhibited high variance.
-Interestingly, \sys has greater memory improvements in general, which is due to its more fine-grained handling of \verb|from import| statements.
+\sys has greater memory improvements in general, due to its more fine-grained handling of \verb|from import| statements.
 Both systems outperform the reported~\cite{faaslight2023} performance of Vulture.
 
 
@@ -1304,10 +1407,10 @@ Finally, parallelization of DD may be possible; however, this is out of the scop
 
 
 
-As for efficacy, \sys achieves a remarkable reduction in attributes.
+As for efficacy, \sys achieves a sizable reduction in attributes.
 For instance, \sys removes 3291 out of 3300 attributes from the \module{transformers} top-level module and 1306 out of 1414 attributes from \module{torch}.
 We also observe that the number of removed attributes for the same module varies between different applications.
-Specifically, \sys 496 out of 537 attributes from \module{numpy} for \application{dna-visualization}, while for \application{wine}, it only removes 33.
+Specifically, it removes 496 out of 537 attributes from \module{numpy} for \application{dna-visualization}, while for \application{wine}, it only removes 33.
 This happens because different applications require different functionalities (and therefore different number of attributes) from the same module.
 
 
@@ -1430,7 +1533,7 @@ Cost also mimics the growth of these two factors, which is expected from \Cref{e
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.95\textwidth]{chapters/evaluation/cr-comparison.pdf}
+    \includegraphics[width=0.9\textwidth]{chapters/evaluation/cr-comparison.pdf}
     \vspace{-1.2em}
     \caption{Comparison of initialization time between \sys, C/R and C/R + \sys.}
     \label{fig:cr-comparison}
@@ -1512,15 +1615,15 @@ In both cases, we compare the original application against C/R, \sys, and the co
 \Cref{fig:cr-comparison} compares the initialization time of all evaluated variants.
 We observe significant differences between applications, largely based on their initialization time.
 
-For small applications ($<$0.2\,s), \sys on its own outperforms all other variants.
+For small applications ($<$0.2\,s), \sys outperforms all other variants.
 In fact, C/R is much worse than the baseline application.
-This is due to the fact that \texttt{CRIU} keeps track of all system calls that occurred before the checkpoint and then executes them again during restore, thus incurring significant overhead before actually loading the checkpoint.
-This overhead seems to be close to 0.1 seconds.
+This is due to the fact that \texttt{CRIU} recreates the process tree by forking its own process and then restores process state by using information collected from reading \texttt{/proc} during the checkpointing.
+This procedure incurs an overhead, which seems to be around 0.1 seconds.
 
 \begin{figure*}[t!]
   \centering
     
-    \includegraphics[width=0.95\textwidth]{chapters/evaluation/SnapStartCost_matched.pdf}
+    \includegraphics[width=0.9\textwidth]{chapters/evaluation/SnapStartCost_matched.pdf}
 
 \vspace{-0.7em}
   \caption{Amortized invocation and SnapStart costs for simulated traces of our benchmarked applications.
@@ -1560,7 +1663,7 @@ Debloating always reduces the size of the checkpoint and does so by an average o
 The tradeoff of C/R-based approaches are its large resource overheads to store and restore the checkpoints.
 We can quantify these overheads using the pricing of SnapStart, which charges users based on both the restore cost (number of cold starts) and storage costs (quantifed in units of GB-seconds)~\cite{sspricing}.
 
-To illustrate the magnitude of these costs, we simulate the application of SnapStart to Microsoft's Azure Function trace~\cite{wild2020}, which includes invocation timestamps, execution times, and memory allocations\footnote{Memory allocations may overestimate the actual memory footprint, but prior studies of Azure infrastructure~\cite{zhang2022compucache} suggest that the two values are within a factor of $\sim$2.}.
+To illustrate the magnitude of these costs, we simulate running applications in the Microsoft's Azure Function trace~\cite{wild2020} with SnapStart.
 \Cref{fig:SnapStartCDF} shows a CDF of the ratio between SnapStart costs and the total cost for the applications.
 Even for extremely long keep-alive times, the median application would spend $>$60\% of its cloud budget on paying for C/R support, mostly on caching costs.
 
@@ -1582,19 +1685,24 @@ As shown in \Cref{fig:snapstartcost}, \sys reduces total costs by up to 42\% (av
 
  
 
+\vspace{-2pt}
 
 \subsection{Fallback Overhead}\label{sec:fallback-overhead}
-
-When triggering the fallback mechanism, the overheads include setup, communication delays, and invocation of the original function.
+\sys can fall back to the original function if necessary attributes are incorrectly removed.
+When triggering the fallback, the overheads include setup, communication delays, and invocation of the original function.
 We comprehensively evaluate these overheads by measuring E2E latencies in every combination of warm/cold start for the \sys and the fallback functions.
 \Cref{tab:fallback-overhead} shows results for representative applications of different sizes: small (\application{dna-visualization}), medium (\application{lightgbm}), and large (\application{spacy, huggingface}).
 
-The setup overhead is around 50ms, measured by timestamps in the function. When the fallback function is cold, its cold start latency dominates the fallback overhead. Cold fallback overhead doubles the E2E latency of a cold \sys function and contributes over 90\% of the latency of a warm \sys funcion. Overall, the invocation of the original function is the main source of fallback overhead.
+The setup overhead is around 50\,ms, measured by timestamps in the function.
+When the fallback function is cold, its cold start latency dominates the fallback overhead.
+Cold fallback overhead doubles the E2E latency of a cold \sys function and contributes over 90\% of the latency of a warm \sys function.
+Overall, the invocation of the original function is the main source of fallback overhead.
 
   
+
 \section{Related and Future Work in Debloating}
 
-Expanding our discussion in \cref{sec:related-coldstarts}, \sys is also related to the
+Expanding \cref{sec:related-coldstarts}, \sys is also related to the
 extensive work in debloating such applications with techniques like static and reachability analysis~\cite{vulture, nibbler2019, piece-wise2018}, dynamic analysis~\cite{piece-wise2018, dynamic-binary14},
 just-in-time loading~\cite{blankit2020} or even manual investigation and modification of applications~\cite{less-is-more19, libprof2024}.
 Like \sys, these systems are motivated by the fact that modern software is heavily bloated due to the use (and reuse) of libraries offering a plethora of functionalities~\cite{bloating-study17, pybloat2024,kuo20cozart}.
@@ -1605,11 +1713,12 @@ This technique and efforts to improve it (e.g., using learning to accelerate the
 
 
 
-Although developers pay the cost of debloating once (and therefore, this cost is off the critical path), \sys still suffers from substantial debloating times for medium to large applications.
+
+Looking forward, although developers pay the cost of debloating once (and therefore, this cost is off the critical path), \sys still suffers from substantial debloating times for medium to large applications.
 We plan on accelerating the debloating phase with various optimizations.
 
 First, we will parallelize DD both intra-(multiple sets of attributes of the same module in parallel) and inter-(multiple modules in parallel) modules.
-The latter will require very meticulous handling of module dependencies mainly due to Python's cyclic imports.
+The latter will require very meticulous handling of module dependencies, mainly due to Python's cyclic imports.
 Finally, we plan to implement a continuous debloating pipeline for both function updates and inputs that are collected through our fallback mechanism.
 This pipeline will make use of logs collected during the initial debloating to drive the subsequent debloating more efficiently in both aforementioned cases.
 
@@ -1617,18 +1726,28 @@ This pipeline will make use of logs collected during the initial debloating to d
 
 
  
+
 \section{Conclusion}
 
 This paper introduced \sys, a system designed to reduce the overhead of Python-based serverless applications by optimizing their Function Initialization phase.
 This phase has an outsized effect on not only cold start latency but also the resource consumption and monetary costs of all executions---cold or warm.
-\sys leverages profiling and DD to eliminate unnecessary initialization tasks, offering a practical and immediately deployable solution that aligns well with other cold start optimization efforts while contributing uniquely to cost efficiency.
+\sys leverages profiling and DD, and offers a practical and immediately deployable solution that aligns well with other cold start optimization efforts while contributing uniquely to cost efficiency.
 
  
+\begin{acks}
+We gratefully acknowledge our shepherd, Pedro Fonseca, and the anonymous ASPLOS reviewers for all of their thoughtful comments.
+This work was funded in part by NSF grants CNS-2107147, CCF-2326606, and CNS-2321726.
+\end{acks}
 
 
-{
-\bibliographystyle{plain}
+
+
+
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{ref}
-}
+
+
+
+
 
 \end{document}
